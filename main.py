@@ -75,6 +75,7 @@ def main():
         for polje in ploca:
           if x < polje[0] and y < polje[1]:
             if polje[2] != Polje.NONE:
+              player_turn = not player_turn
               print("Polje already taken!")
               break
             elif player_turn:
