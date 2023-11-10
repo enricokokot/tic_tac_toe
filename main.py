@@ -15,6 +15,7 @@ LINE_THICKNESS = 5
 FPS = 60
 
 Polje = Enum('Polje', ['NONE', 'X', 'O'])
+GameStatus = Enum("GameStatus", ["ONGOING", "WINNER", "DRAW"])
 
 def initialize_game():
   ploca = [
@@ -28,6 +29,21 @@ def initialize_game():
     polje[1] = polje[1] * HEIGHT
 
   return ploca
+
+def check_game_status(board):
+  if (board[0][2] == board[1][2] == board[2][2] != Polje.NONE or
+      board[3][2] == board[4][2] == board[5][2] != Polje.NONE or 
+      board[6][2] == board[7][2] == board[8][2] != Polje.NONE or
+      board[0][2] == board[3][2] == board[6][2] != Polje.NONE or
+      board[1][2] == board[4][2] == board[7][2] != Polje.NONE or 
+      board[2][2] == board[5][2] == board[8][2] != Polje.NONE or
+      board[0][2] == board[4][2] == board[8][2] != Polje.NONE or
+      board[2][2] == board[4][2] == board[6][2] != Polje.NONE):
+    return GameStatus.WINNER
+  is_board_not_full = [status_polja[2] for status_polja in board if status_polja[2] == Polje.NONE]
+  if not is_board_not_full:
+    return GameStatus.DRAW
+  return GameStatus.ONGOING
 
 def draw_board():
   # pygame.draw.rect(WIN, BLACK, RECTANGLE)
@@ -58,6 +74,7 @@ def draw_window(figures):
 
 def main():
   ploca = initialize_game()
+  current_game_status = GameStatus.ONGOING
   figures = []
   player_turn = True
   clock = pygame.time.Clock()
@@ -84,7 +101,11 @@ def main():
               polje[2] = Polje.O
             figures.append([polje[0] - WIDTH * 0.16, polje[1] - HEIGHT * 0.16, player_turn])
             break
-        # print(ploca)
+        current_game_status = check_game_status(ploca)
+        if current_game_status == GameStatus.DRAW:
+          print("Game Over, nobody won!")
+        elif current_game_status == GameStatus.WINNER:
+          print("Good job, somebody won!")
 
     draw_window(figures)
 
