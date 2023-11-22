@@ -1,5 +1,7 @@
 from enum import Enum
 import pygame
+import random
+import time
 
 WIDTH, HEIGHT = 300, 300
 WIN = pygame.display.set_mode((WIDTH, HEIGHT + 50))
@@ -16,6 +18,7 @@ FPS = 60
 
 Polje = Enum('Polje', ['NONE', 'X', 'O'])
 GameStatus = Enum("GameStatus", ["ONGOING", "WINNER", "DRAW"])
+PlayerType = Enum("PlayerType", ["HUMAN", "AI"])
 
 def initialize_game():
   ploca = [
@@ -71,16 +74,52 @@ def draw_window(figures):
       draw_o(figure[0], figure[1])
   pygame.display.update()
 
+def set_current_player(player_types, player_turn):
+  if player_turn:
+    return player_types[0]
+  return player_types[1]
+
 
 def main():
   ploca = initialize_game()
   current_game_status = GameStatus.ONGOING
   figures = []
   player_turn = True
+  player_types = [PlayerType.AI, PlayerType.AI]
   clock = pygame.time.Clock()
   running = True
   while running:
     clock.tick(FPS)
+    current_player_type = set_current_player(player_types, player_turn)
+    if current_player_type == PlayerType.AI:
+      polje_not_found = True
+      while polje_not_found:
+        player_turn = not player_turn
+        x, y = random.randrange(WIDTH), random.randrange(HEIGHT)
+        for polje in ploca:
+          if x < polje[0] and y < polje[1]:
+            if polje[2] != Polje.NONE:
+              player_turn = not player_turn
+              print("Polje already taken!")
+              break
+            elif player_turn:
+              polje[2] = Polje.X
+            else:
+              polje[2] = Polje.O
+            time.sleep(2)
+            figures.append([polje[0] - WIDTH * 0.16, polje[1] - HEIGHT * 0.16, player_turn])
+            break
+        current_game_status = check_game_status(ploca)
+        if current_game_status == GameStatus.DRAW:
+          print("Game Over, nobody won!")
+          time.sleep(5)
+          pygame.quit()
+        elif current_game_status == GameStatus.WINNER:
+          print("Good job, somebody won!")
+          time.sleep(5)
+          pygame.quit()
+        polje_not_found = False
+
     for event in pygame.event.get():
 
       if event.type == pygame.QUIT:
@@ -104,8 +143,12 @@ def main():
         current_game_status = check_game_status(ploca)
         if current_game_status == GameStatus.DRAW:
           print("Game Over, nobody won!")
+          time.sleep(5)
+          pygame.quit()
         elif current_game_status == GameStatus.WINNER:
           print("Good job, somebody won!")
+          time.sleep(5)
+          pygame.quit()
 
     draw_window(figures)
 
