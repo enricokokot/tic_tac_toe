@@ -82,10 +82,11 @@ def set_current_player(player_types, player_turn):
 
 def main():
   ploca = initialize_game()
+  game_over = False
   current_game_status = GameStatus.ONGOING
   figures = []
   player_turn = True
-  player_types = [PlayerType.AI, PlayerType.AI]
+  player_types = [PlayerType.AI, PlayerType.HUMAN]
   clock = pygame.time.Clock()
   running = True
   while running:
@@ -112,12 +113,10 @@ def main():
         current_game_status = check_game_status(ploca)
         if current_game_status == GameStatus.DRAW:
           print("Game Over, nobody won!")
-          time.sleep(5)
-          pygame.quit()
+          game_over = True
         elif current_game_status == GameStatus.WINNER:
+          game_over = True
           print("Good job, somebody won!")
-          time.sleep(5)
-          pygame.quit()
         polje_not_found = False
 
     for event in pygame.event.get():
@@ -143,14 +142,16 @@ def main():
         current_game_status = check_game_status(ploca)
         if current_game_status == GameStatus.DRAW:
           print("Game Over, nobody won!")
-          time.sleep(5)
-          pygame.quit()
+          game_over = True
         elif current_game_status == GameStatus.WINNER:
           print("Good job, somebody won!")
-          time.sleep(5)
-          pygame.quit()
+          game_over = True
 
     draw_window(figures)
+
+    if game_over:
+      time.sleep(5)
+      pygame.quit()
 
   pygame.quit()
 
