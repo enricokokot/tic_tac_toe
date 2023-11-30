@@ -86,7 +86,7 @@ def main():
   current_game_status = GameStatus.ONGOING
   figures = []
   player_turn = True
-  player_types = [PlayerType.AI, PlayerType.HUMAN]
+  player_types = [PlayerType.AI, PlayerType.AI]
   clock = pygame.time.Clock()
   running = True
   while running:
@@ -96,7 +96,7 @@ def main():
       polje_not_found = True
       while polje_not_found:
         player_turn = not player_turn
-        x, y = random.randrange(WIDTH), random.randrange(HEIGHT)
+        x, y = decide_next_step(ploca, player_turn, WIDTH, HEIGHT)
         for polje in ploca:
           if x < polje[0] and y < polje[1]:
             if polje[2] != Polje.NONE:
@@ -154,6 +154,17 @@ def main():
       pygame.quit()
 
   pygame.quit()
+
+def decide_next_step(ploca, player_turn, WIDTH, HEIGHT):
+  polje_not_found = True
+  while polje_not_found:
+      x, y = random.randrange(WIDTH), random.randrange(HEIGHT)
+      for polje in ploca:
+          if x < polje[0] and y < polje[1]:
+            if polje[2] != Polje.NONE:
+              break
+            polje_not_found = False
+  return x, y
 
 if __name__ == "__main__":
   main()
