@@ -79,6 +79,12 @@ def set_current_player(player_types, player_turn):
     return player_types[0]
   return player_types[1]
 
+def declare_winner(player_turn):
+  if player_turn:
+    winner = "O"
+  else:
+    winner = "X"
+  print(f"Good job, {winner} won!")
 
 def main():
   ploca = initialize_game()
@@ -116,7 +122,7 @@ def main():
           game_over = True
         elif current_game_status == GameStatus.WINNER:
           game_over = True
-          print("Good job, somebody won!")
+          declare_winner(player_turn)
         polje_not_found = False
 
     for event in pygame.event.get():
@@ -144,7 +150,7 @@ def main():
           print("Game Over, nobody won!")
           game_over = True
         elif current_game_status == GameStatus.WINNER:
-          print("Good job, somebody won!")
+          declare_winner(player_turn)
           game_over = True
 
     draw_window(figures)
@@ -158,6 +164,7 @@ def main():
 def decide_next_step(ploca, player_turn, WIDTH, HEIGHT):
   polje_not_found = True
   while polje_not_found:
+      # TODO: implement next step decision based on current game status
       x, y = random.randrange(WIDTH), random.randrange(HEIGHT)
       for polje in ploca:
           if x < polje[0] and y < polje[1]:
