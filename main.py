@@ -2,6 +2,7 @@ from enum import Enum
 import pygame
 import random
 import time
+import tkinter
 
 WIDTH, HEIGHT = 300, 300
 WIN = pygame.display.set_mode((WIDTH, HEIGHT + 50))
@@ -87,12 +88,41 @@ def declare_winner(player_turn):
   print(f"Good job, {winner} won!")
 
 def main():
+  root = tkinter.Tk()
+  root.eval('tk::PlaceWindow . center')
+
+  label_0 = tkinter.Label(root)
+  label_0.config(text="Who is player 1?")
+  label_0.pack()
+
+  player_one_type = tkinter.IntVar()
+  R0 = tkinter.Radiobutton(root, text="Human", variable=player_one_type, value=0)
+  R0.pack(anchor=tkinter.W)
+  R1 = tkinter.Radiobutton(root, text="AI", variable=player_one_type, value=1)
+  R1.pack(anchor=tkinter.W)
+
+  label_1 = tkinter.Label(root)
+  label_1.config(text="Who is player 2?")
+  label_1.pack()
+  
+  player_two_type = tkinter.IntVar()
+  R2 = tkinter.Radiobutton(root, text="Human", variable=player_two_type, value=0)
+  R2.pack(anchor=tkinter.W)
+  R3 = tkinter.Radiobutton(root, text="AI", variable=player_two_type, value=1)
+  R3.pack(anchor=tkinter.W)
+
+  root.mainloop()
+
   ploca = initialize_game()
   game_over = False
   current_game_status = GameStatus.ONGOING
   figures = []
   player_turn = True
-  player_types = [PlayerType.AI, PlayerType.AI]
+  player_types = [PlayerType.HUMAN, PlayerType.HUMAN]
+  if player_one_type.get() == 1:
+    player_types[0] = PlayerType.AI
+  if player_two_type.get() == 1:
+    player_types[1] = PlayerType.AI
   clock = pygame.time.Clock()
   running = True
   while running:
