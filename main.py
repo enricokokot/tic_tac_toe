@@ -3,6 +3,7 @@ import pygame
 import random
 import time
 import tkinter
+import algo
 
 WIDTH, HEIGHT = 300, 300
 WIN = pygame.display.set_mode((WIDTH, HEIGHT + 50))
@@ -194,14 +195,37 @@ def main():
 def decide_next_step(ploca, player_turn, WIDTH, HEIGHT):
   polje_not_found = True
   while polje_not_found:
-      # TODO: implement next step decision based on current game status
-      x, y = random.randrange(WIDTH), random.randrange(HEIGHT)
+      nova_ploca = ploca.copy()
+      nova_ploca = [tranform_board_input(polje[2]) for polje in nova_ploca]
+      actual_player_turn = "O" if player_turn else "X"
+      ai_move = pick_space_on_board(nova_ploca, actual_player_turn)
+      x = ploca[ai_move][0] - 0.1
+      y = ploca[ai_move][1] - 0.1
+      # x, y = random.randrange(WIDTH), random.randrange(HEIGHT)
       for polje in ploca:
           if x < polje[0] and y < polje[1]:
             if polje[2] != Polje.NONE:
               break
             polje_not_found = False
   return x, y
+
+def tranform_board_input(local_input):
+  if local_input == Polje.NONE:
+    return "_"
+  elif local_input == Polje.X:
+    return "O"
+  elif local_input == Polje.O:
+    return "X"
+
+def pick_random_empty_space_on_board(ploca):
+  random_index = random.randint(0, len(ploca)-1)
+  while ploca[random_index] != "_":
+    random_index = random.randint(0, len(ploca)-1)
+  return random_index
+
+def pick_space_on_board(board, player_turn):
+  # return pick_random_empty_space_on_board(board)
+  return algo.pick_space_on_board(board)
 
 if __name__ == "__main__":
   main()
