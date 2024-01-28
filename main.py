@@ -4,6 +4,7 @@ import random
 import time
 import tkinter
 import algo
+import ai
 
 WIDTH, HEIGHT = 300, 300
 WIN = pygame.display.set_mode((WIDTH, HEIGHT + 50))
@@ -225,7 +226,8 @@ def pick_random_empty_space_on_board(ploca):
 
 def pick_space_on_board(board, player_turn):
   # return pick_random_empty_space_on_board(board)
-  return algo.pick_space_on_board(board)
+  # return algo.pick_space_on_board(board)
+  return ai.pick_space_on_board(board, player_turn)
 
 if __name__ == "__main__":
   main()
