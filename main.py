@@ -241,6 +241,9 @@ def pick_random_empty_space_on_board(ploca):
 def pick_space_on_board(board, player_turn, current_player_type):
   # return pick_random_empty_space_on_board(board)
   if current_player_type == PlayerType.AI_0:
+    board_is_empty = all([True if piece=="_" else False for piece in board])
+    if board_is_empty:
+      return 0
     return algo.pick_space_on_board(board)
   elif current_player_type == PlayerType.AI_1:
     return ai.pick_space_on_board(board, player_turn)
