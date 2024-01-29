@@ -139,7 +139,7 @@ def main():
   while running:
     clock.tick(FPS)
     current_player_type = set_current_player(player_types, player_turn)
-    
+
     if current_player_type == PlayerType.AI_0 or current_player_type == PlayerType.AI_1:
       polje_not_found = True
       while polje_not_found:
@@ -199,7 +199,11 @@ def main():
 
     if game_over:
       time.sleep(5)
-      pygame.quit()
+      ploca = initialize_game()
+      game_over = False
+      current_game_status = GameStatus.ONGOING
+      figures = []
+      player_turn = True
 
   pygame.quit()
 
