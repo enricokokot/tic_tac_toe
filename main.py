@@ -21,7 +21,7 @@ FPS = 60
 
 Polje = Enum('Polje', ['NONE', 'X', 'O'])
 GameStatus = Enum("GameStatus", ["ONGOING", "WINNER", "DRAW"])
-PlayerType = Enum("PlayerType", ["HUMAN", "AI"])
+PlayerType = Enum("PlayerType", ["HUMAN", "AI_0", "AI_1"])
 
 def initialize_game():
   ploca = [
@@ -100,18 +100,22 @@ def main():
   player_one_type = tkinter.IntVar()
   R0 = tkinter.Radiobutton(root, text="Human", variable=player_one_type, value=0)
   R0.pack(anchor=tkinter.W)
-  R1 = tkinter.Radiobutton(root, text="AI", variable=player_one_type, value=1)
+  R1 = tkinter.Radiobutton(root, text="AI 0", variable=player_one_type, value=1)
   R1.pack(anchor=tkinter.W)
+  R2 = tkinter.Radiobutton(root, text="AI 1", variable=player_one_type, value=2)
+  R2.pack(anchor=tkinter.W)
 
   label_1 = tkinter.Label(root)
   label_1.config(text="Who is player 2?")
   label_1.pack()
   
   player_two_type = tkinter.IntVar()
-  R2 = tkinter.Radiobutton(root, text="Human", variable=player_two_type, value=0)
-  R2.pack(anchor=tkinter.W)
-  R3 = tkinter.Radiobutton(root, text="AI", variable=player_two_type, value=1)
+  R3 = tkinter.Radiobutton(root, text="Human", variable=player_two_type, value=0)
   R3.pack(anchor=tkinter.W)
+  R4 = tkinter.Radiobutton(root, text="AI 0", variable=player_two_type, value=1)
+  R4.pack(anchor=tkinter.W)
+  R5 = tkinter.Radiobutton(root, text="AI 1", variable=player_two_type, value=2)
+  R5.pack(anchor=tkinter.W)
 
   root.mainloop()
 
@@ -122,19 +126,25 @@ def main():
   player_turn = True
   player_types = [PlayerType.HUMAN, PlayerType.HUMAN]
   if player_one_type.get() == 1:
-    player_types[0] = PlayerType.AI
+    player_types[0] = PlayerType.AI_0
+  elif player_one_type.get() == 2:
+    player_types[0] = PlayerType.AI_1
   if player_two_type.get() == 1:
-    player_types[1] = PlayerType.AI
+    player_types[1] = PlayerType.AI_0
+  elif player_two_type.get() == 2:
+    player_types[1] = PlayerType.AI_1
   clock = pygame.time.Clock()
   running = True
+
   while running:
     clock.tick(FPS)
     current_player_type = set_current_player(player_types, player_turn)
-    if current_player_type == PlayerType.AI:
+    
+    if current_player_type == PlayerType.AI_0 or current_player_type == PlayerType.AI_1:
       polje_not_found = True
       while polje_not_found:
         player_turn = not player_turn
-        x, y = decide_next_step(ploca, player_turn, WIDTH, HEIGHT)
+        x, y = decide_next_step(ploca, player_turn, current_player_type, WIDTH, HEIGHT)
         for polje in ploca:
           if x < polje[0] and y < polje[1]:
             if polje[2] != Polje.NONE:
@@ -193,13 +203,13 @@ def main():
 
   pygame.quit()
 
-def decide_next_step(ploca, player_turn, WIDTH, HEIGHT):
+def decide_next_step(ploca, player_turn, current_player_type, WIDTH, HEIGHT):
   polje_not_found = True
   while polje_not_found:
       nova_ploca = ploca.copy()
       nova_ploca = [tranform_board_input(polje[2]) for polje in nova_ploca]
       actual_player_turn = "O" if player_turn else "X"
-      ai_move = pick_space_on_board(nova_ploca, actual_player_turn)
+      ai_move = pick_space_on_board(nova_ploca, actual_player_turn, current_player_type)
       x = ploca[ai_move][0] - 0.1
       y = ploca[ai_move][1] - 0.1
       # x, y = random.randrange(WIDTH), random.randrange(HEIGHT)
@@ -224,10 +234,12 @@ def pick_random_empty_space_on_board(ploca):
     random_index = random.randint(0, len(ploca)-1)
   return random_index
 
-def pick_space_on_board(board, player_turn):
+def pick_space_on_board(board, player_turn, current_player_type):
   # return pick_random_empty_space_on_board(board)
-  # return algo.pick_space_on_board(board)
-  return ai.pick_space_on_board(board, player_turn)
+  if current_player_type == PlayerType.AI_0:
+    return algo.pick_space_on_board(board)
+  elif current_player_type == PlayerType.AI_1:
+    return ai.pick_space_on_board(board, player_turn)
 
 if __name__ == "__main__":
   main()
