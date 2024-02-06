@@ -1,4 +1,5 @@
 import numpy as np
+import json
 
 def minimax(board, player):
 
@@ -52,9 +53,18 @@ def check_winner(board):
     return -1
 
 def pick_space_on_board(board):
+    move_picker = read_from_manual()
+    hashed_board = str(board)
+
+    if hashed_board in move_picker.keys():
+        return move_picker[hashed_board]
+
     localized_board = transform_input(board)
     solution = minimax(localized_board, 1)
     final_solution = transform_output(solution)
+
+    move_picker[hashed_board] = final_solution
+    write_to_manual(move_picker)
     return final_solution
 
 def transform_input(input):
@@ -81,4 +91,13 @@ def transform_input(input):
 
 def transform_output(local_solution):
     final_output = local_solution[0]*3 + local_solution[1]
-    return final_output
+    return int(final_output)
+
+def read_from_manual():
+    with open("manual.txt", "r") as the_file:
+        return json.load(the_file)
+
+def write_to_manual(manual):
+    json_object = json.dumps(manual, indent=4)
+    with open("manual.txt", "w") as the_file:
+        the_file.write(json_object)
